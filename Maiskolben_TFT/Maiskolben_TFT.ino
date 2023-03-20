@@ -27,7 +27,7 @@
  */
 
 // V 1.5 - 2.11, Maiskolben THT
-//#define HARDWARE_REVISION     2
+#define HARDWARE_REVISION     2
 // V 3.0 and 3.1
 //#define HARDWARE_REVISION     3
 
