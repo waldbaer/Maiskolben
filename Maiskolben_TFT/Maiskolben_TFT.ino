@@ -652,7 +652,7 @@ void display(void) {
 			tft.setTextSize(2);
 			tft.setTextColor(YELLOW, BLACK);
 			tft.setCursor(10,112);
-			tft.print(F("         OK "));
+			tft.print(F("          OK"));
 
 			tft.setTextColor(RED, BLACK);
 			tft.setCursor(36,26);
@@ -664,6 +664,8 @@ void display(void) {
 			tft.fillRect(0, 96, 160, 16, BLACK);
 			error_old = NO_ERROR;
 		}
+		// Show presets
+		tft.drawFastHLine(0, 108, 160, WHITE);
 		tft.setTextSize(2);
 		tft.setCursor(15,112);
 		tft.setTextColor(WHITE, BLACK);
@@ -672,7 +674,9 @@ void display(void) {
 		printTemp(stored[1]);
 		tft.write(' ');
 		printTemp(stored[2]);
-		
+		tft.write(' ');
+		tft.drawFastHLine(0, 127, 160, BLACK); // black last line to avoid white pixel bottom left
+
 		if (set_t_old != set_t || old_stby != (stby || stby_layoff) || force_redraw) {
 			tft.setCursor(36,26);
 			tft.setTextSize(3);
