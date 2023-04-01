@@ -2,7 +2,7 @@
 #define EE_VERSION      31
 #define EEPROM_CHECK	42
 
-#define BAR_HEIGHT       4 //Should be no bigger than 5
+#define BAR_HEIGHT       5 //Should be no bigger than 5
 
 /*
  * TIPS ARE SPECIFIED FOR 450 DEGREE MAX

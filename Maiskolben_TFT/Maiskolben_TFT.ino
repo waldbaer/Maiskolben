@@ -622,16 +622,18 @@ void display(void) {
 	if (force_redraw) tft.fillScreen(BLACK);
 	int16_t temperature = cur_t; //buffer volatile value
 	boolean yell = stby || (stby_layoff && blink);
-	tft.drawCircle(20,63,8, off?RED:yell?YELLOW:GREEN);
-	tft.drawCircle(20,63,7,off?RED:yell?YELLOW:GREEN);
-	tft.fillRect(19,55,3,3,BLACK);
-	tft.drawFastVLine(20,53,10, off?RED:yell?YELLOW:GREEN);
+	// on / off sign
+	tft.drawCircle(17,61,10, off?RED:yell?YELLOW:GREEN);
+	tft.drawCircle(17,61,11, off?RED:yell?YELLOW:GREEN);
+	tft.drawFastVLine(17,47,14, off?RED:yell?YELLOW:GREEN);
+	tft.drawFastVLine(18,47,14, off?RED:yell?YELLOW:GREEN);
+
 	if (error != NO_ERROR) {
 		if (error != error_old || force_redraw) {
 			error_old = error;
 			tft.setTextSize(1);
 			tft.setTextColor(RED, BLACK);
-			tft.setCursor(0,96);
+			tft.setCursor(0,92);
 			switch (error) {
 				case EXCESSIVE_FALL:
 					tft.print(F("Error: Temperature dropped\nTip slipped out?"));
@@ -655,17 +657,17 @@ void display(void) {
 			tft.print(F("          OK"));
 
 			tft.setTextColor(RED, BLACK);
-			tft.setCursor(36,26);
+			tft.setCursor(36,21);
 			tft.setTextSize(3);
 			tft.print(F("ERROR   "));
 		}
 	} else {
 		if (error != error_old || force_redraw) {
-			tft.fillRect(0, 96, 160, 16, BLACK);
+			tft.fillRect(0, 92, 160, 17, BLACK); // Clear previous detailed error text in last line
 			error_old = NO_ERROR;
 		}
 		// Show presets
-		tft.drawFastHLine(0, 108, 160, WHITE);
+		tft.drawFastHLine(0, 109, 160, WHITE);
 		tft.setTextSize(2);
 		tft.setCursor(15,112);
 		tft.setTextColor(WHITE, BLACK);
@@ -678,7 +680,7 @@ void display(void) {
 		tft.drawFastHLine(0, 127, 160, BLACK); // black last line to avoid white pixel bottom left
 
 		if (set_t_old != set_t || old_stby != (stby || stby_layoff) || force_redraw) {
-			tft.setCursor(36,26);
+			tft.setCursor(36,21);
 			tft.setTextSize(3);
 			if (stby || stby_layoff) {
 				old_stby = true;
@@ -688,9 +690,10 @@ void display(void) {
 				old_stby = false;
 				set_t_old = set_t;
 				tft.setTextColor(WHITE, BLACK);
-				tft.write(' ');
 				printTemp(set_t);
-				tft.write(247);
+				tft.write(' ');
+				tft.drawCircle(100, 25, 4, WHITE); // degree symbol
+				tft.drawCircle(100, 25, 3, WHITE); // degree symbol
 				tft.write(fahrenheit?'F':'C');
 
 				// Set-Temperature up/down arrows
@@ -709,7 +712,7 @@ void display(void) {
 				}
 				tft.setTextColor(stby?RED:YELLOW, BLACK);
 				tft.setTextSize(2);
-				tft.setCursor(46,78);
+				tft.setCursor(36,77);
 				if (tout < 600) tft.write('0');
 				tft.print(tout/60);
 				tft.write(':');
@@ -718,29 +721,33 @@ void display(void) {
 			}
 #endif
 		} else if (temperature != 999) {
-			tft.fillRect(46, 78, 60, 20, BLACK);
+			tft.fillRect(36, 77, 60, 20, BLACK); // Clear timer area
 		}
 	}
 	if (cur_t_old != temperature || force_redraw) {
-		tft.setCursor(36,52);
+		tft.setCursor(36,50);
 		tft.setTextSize(3);
 		if (temperature == 999) {
 			tft.setTextColor(RED, BLACK);
-			tft.print(F(" ERR  "));
-			tft.setCursor(44,76);
+			tft.print(F("ERROR  "));
+			tft.setCursor(36,76);
 			tft.setTextSize(2);
 			tft.print(F("NO TIP"));
 		} else {
 			if (cur_t_old == 999) {
 				tft.fillRect(44,76,72,16,BLACK);
 			}
-			tft.setTextColor(off ? temperature < TEMP_COLD ? CYAN : RED : tft.Color565(min(10,abs(temperature-target_t))*25, 250 - min(10,max(0,(abs(temperature-target_t)-10)))*25, 0), BLACK);
+
+            int temp_specific_textcolor = off ? temperature < TEMP_COLD ? CYAN : RED : tft.Color565(min(10,abs(temperature-target_t))*25, 250 - min(10,max(0,(abs(temperature-target_t)-10)))*25, 0);
+			tft.setTextColor(temp_specific_textcolor, BLACK);
 			if (temperature < TEMP_COLD) {
-				tft.print(F("COLD  "));
+				tft.print(F("COLD "));
+
 			} else {
-				tft.write(' ');
 				printTemp(temperature);
-				tft.write(247);
+				tft.write(' ');
+				tft.drawCircle(100, 55, 4, temp_specific_textcolor); // degree symbol
+				tft.drawCircle(100, 55, 3, temp_specific_textcolor); // degree symbol
 				tft.write(fahrenheit?'F':'C');
 			}
 		}
