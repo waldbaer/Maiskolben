@@ -10,7 +10,7 @@
  */
 #define TEMP_MAX    450
 #define TEMP_MIN    200
-#define TEMP_STBY   150
+#define TEMP_STBY   100
 #define TEMP_COLD   (adc_offset + 15)
 
 #define SHUTOFF_ACTIVE
