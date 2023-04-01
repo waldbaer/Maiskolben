@@ -132,6 +132,7 @@ void setup(void) {
 		tft.setCursor(10,112);
 		tft.setTextColor(RED);
 		tft.print("RED     BLUE");
+		tft.drawFastHLine(0, DISPLAY_HEIGHT - 1, DISPLAY_WIDTH, BLACK);
 		while (true) {
 			if (!digitalRead(SW_T1)) {
 				EEPROM.update(EEPROM_DISPLAY, BGR_DISP);
@@ -146,13 +147,11 @@ void setup(void) {
 		}
 		tft.fillScreen(BLACK);
 		tft.setTextColor(YELLOW);
-		tft.drawBitmap(0, 20, maiskolben, 160, 64, YELLOW);
-		tft.setCursor(20,86);
-		tft.setTextColor(YELLOW);
-		tft.setTextSize(2);
-		tft.print("Maiskolben");
-		tft.setCursor(35,104);
-		tft.print("Welcome!");
+
+		// Logo and name
+		tft.drawBitmap((DISPLAY_WIDTH - 75) / 2,  0, splash_tip, 75, 75, YELLOW);
+		tft.drawBitmap((DISPLAY_WIDTH - 139) / 2, 83, splash_name, 139, 27, WHITE);
+
 		delay(4000);
 		while (!digitalRead(SW_T3) || !digitalRead(SW_T1)) delay(100);
 	} else {
@@ -226,18 +225,21 @@ void setup(void) {
 	if (force_menu) optionMenu();
 	else {
 		updateRevision();
-		tft.drawBitmap(0, 20, maiskolben, 160, 64, YELLOW);
-		tft.setCursor(20,86);
+
+		// Logo and name
+		tft.drawBitmap((DISPLAY_WIDTH - 75) / 2,  0, splash_tip, 75, 75, YELLOW);
+		tft.drawBitmap((DISPLAY_WIDTH - 139) / 2, 83, splash_name, 139, 27, WHITE);
+
+		// Version + HW Revision
 		tft.setTextColor(YELLOW);
-		tft.setTextSize(2);
-		tft.print("Maiskolben");
-		tft.setCursor(50,110);
+		tft.setCursor(5,120);
 		tft.setTextSize(1);
 		tft.print("Version ");
 		tft.print(VERSION);
-		tft.setCursor(46,120);
+		tft.setCursor(78,120);
 		tft.print("HW Revision ");
 		tft.print(revision);
+
 		//Allow Options to be set at startup
 		delay(100);
 		attachInterrupt(digitalPinToInterrupt(SW_STBY), optionMenu, LOW);
