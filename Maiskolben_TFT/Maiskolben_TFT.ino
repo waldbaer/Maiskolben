@@ -72,15 +72,19 @@ TFT_ILI9163C tft = TFT_ILI9163C(TFT_CS,  TFT_DC, STBY_NO);
 #else
 TFT_ILI9163C tft = TFT_ILI9163C(TFT_CS,  TFT_DC);
 #endif
-#define	BLACK   0x0000
-#define	BLUE    0x001F
-#define	RED     0xF800
-#define	GREEN   0x07E0
-#define CYAN    0x07FF
-#define MAGENTA 0xF81F
-#define YELLOW  0xFFE0
-#define WHITE   0xFFFF
-#define GRAY    0x94B2
+
+// 16bit 5-6-5 color (bit 15..11: red, bit 10..5: green, bit 4..0: blue)
+// http://www.barth-dev.de/online/rgb565-color-picker/
+#define	BLACK      0x0000
+#define	BLUE       0x001F
+#define	RED        0xF800
+#define	GREEN      0x07E0
+#define CYAN       0x07FF
+#define MAGENTA    0xF81F
+#define YELLOW     0xFFE0
+#define WHITE      0xFFFF
+#define GRAY       0x94B2
+#define DARKGRAY   0x7BCF
 
 PID heaterPID(&cur_td, &pid_val, &set_td, kp, ki, kd, DIRECT);
 
@@ -684,8 +688,10 @@ void display(void) {
 				printTemp(set_t);
 				tft.write(247);
 				tft.write(fahrenheit?'F':'C');
-				tft.fillTriangle(149, 50, 159, 50, 154, 38, (set_t < TEMP_MAX) ? WHITE : GRAY);
-				tft.fillTriangle(149, 77, 159, 77, 154, 90, (set_t > TEMP_MIN) ? WHITE : GRAY);
+
+				// Set-Temperature up/down arrows
+				tft.fillTriangle(149, 50, 159, 50, 154, 36, (set_t < TEMP_MAX) ? WHITE : DARKGRAY);
+				tft.fillTriangle(149, 70, 159, 70, 154, 82, (set_t > TEMP_MIN) ? WHITE : DARKGRAY);
 			}
 		}
 		if (!off) {
@@ -737,6 +743,7 @@ void display(void) {
 		if (temperature < cur_t_old)
 			tft.fillRect(max(0, (temperature - TEMP_COLD)/2.4), 0, 160-max(0, (temperature - TEMP_COLD)/2.4), BAR_HEIGHT, BLACK);
 		else if (cur_t != 999) {
+			// Show temperature status bar
 			for (int16_t i = max(0, (cur_t_old - TEMP_COLD)/2.4); i < max(0, (temperature - TEMP_COLD)/2.4); i++) {
 				tft.drawFastVLine(i, 0, BAR_HEIGHT, tft.Color565(min(255, max(0, i*5)), min(255, max(0, 450-i*2.5)), 0));
 			}
