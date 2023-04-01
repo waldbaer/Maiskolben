@@ -18,7 +18,7 @@
  */
 //#define HARDWARE_DEFINED_TFT 2
 /*
- * Based on your Hardware-Revision there may be modifications to the PCB. 
+ * Based on your Hardware-Revision there may be modifications to the PCB.
  * In V3 and up is a second voltage measurement circuit.
  * HW REVS:
  * 1.5 - 2.8:
@@ -78,7 +78,7 @@ TFT_ILI9163C tft = TFT_ILI9163C(TFT_CS,  TFT_DC);
 #define	GREEN   0x07E0
 #define CYAN    0x07FF
 #define MAGENTA 0xF81F
-#define YELLOW  0xFFE0  
+#define YELLOW  0xFFE0
 #define WHITE   0xFFFF
 #define GRAY    0x94B2
 
@@ -101,7 +101,7 @@ void setup(void) {
 	pinMode(TFT_CS, OUTPUT);
 	digitalWrite(TFT_CS, HIGH);
 	Serial.begin(115200);
-	
+
 	boolean force_menu = false;
 	if (EEPROM.read(0) != EEPROM_CHECK) {
 		EEPROM.update(0, EEPROM_CHECK);
@@ -205,7 +205,7 @@ void setup(void) {
 		EEPROM.update(EEPROM_INSTALL, EEPROM_CHECK);
 		EEPROM.put(EEPROM_ADCTTG, adc_gain);
 		EEPROM.put(EEPROM_ADCOFF, adc_offset);
-		
+
 		tft.println("done.");
 		delay(1000);
 		asm volatile("jmp 0");
@@ -271,7 +271,7 @@ void setup(void) {
 
 	for (uint8_t i = 0; i < 50; i++)
 		measureVoltage(); //measure average 50 times to get realistic results
-	
+
 	tft.fillScreen(BLACK);
 	last_measured = getTemperature();
 	Timer1.initialize(1000);
@@ -290,7 +290,7 @@ void setup(void) {
 	EEPROM.get(EEPROM_ADCOFF, adc_offset);
 }
 
-void updateRevision(void) {	
+void updateRevision(void) {
 #if (HARDWARE_REVISION > 2)
 	EEPROM.update(EEPROM_REVISION, HARDWARE_REVISION);
 	revision = 3;
@@ -507,7 +507,7 @@ void timer_sw_poll(void) {
 	boolean t2 = !digitalRead(SW_T2);
 	boolean t3 = !digitalRead(SW_T3);
 
-	//simultanious push of multiple buttons 
+	//simultanious push of multiple buttons
 	if (t1 + t2 + t3 > 1) {
 		store_to = 255;
 		store_invalid = true;
@@ -643,11 +643,11 @@ void display(void) {
 			tft.setTextColor(YELLOW, BLACK);
 			tft.setCursor(10,112);
 			tft.print(F("         OK "));
-			
+
 			tft.setTextColor(RED, BLACK);
 			tft.setCursor(36,26);
 			tft.setTextSize(3);
-			tft.print(F(" ERR  "));
+			tft.print(F("ERROR   "));
 		}
 	} else {
 		if (error != error_old || force_redraw) {
@@ -745,7 +745,7 @@ void display(void) {
 		if (power < 10) tft.write(' ');
 		tft.print(power);
 		tft.write('W');
-		
+
 		if (v < 5.0) {
 			power_source = POWER_USB;
 		} else if (v_c2 < 1.0) {
@@ -866,7 +866,7 @@ void compute(void) {
 			threshold_counter = THRES_MAX_DECEED; //reset counter to a smaller value to allow small oscillation of temperature
 		}
 	}
-	
+
 	set_td = target_t;
 	cur_td = cur_t;
 	last_measured = cur_t;
@@ -882,20 +882,20 @@ void compute(void) {
 void timer_isr(void) {
 	if (cnt_compute >= TIME_COMPUTE_IN_MS) {
 		analogWrite(HEATER_PWM, 0); //switch off heater to let the low pass settle
-		
+
 		if (cnt_compute >= TIME_COMPUTE_IN_MS+DELAY_BEFORE_MEASURE) {
 			compute();
 			cnt_compute=0;
 		}
 	}
 	cnt_compute++;
-	
+
 	if(cnt_sw_poll >= TIME_SW_POLL_IN_MS){
 		timer_sw_poll();
 		cnt_sw_poll=0;
 	}
 	cnt_sw_poll++;
-	
+
 	if(cnt_measure_voltage >= TIME_MEASURE_VOLTAGE_IN_MS) {
 		measureVoltage();
 		cnt_measure_voltage=0;
@@ -912,7 +912,7 @@ void loop(void) {
 	analogWrite(HEAT_LED, pwm);
 	//Switch to following if the oscillation of the led bothers you
 	//digitalWrite(HEAT_LED, cur_t+5 < target || (abs((int16_t)cur_t-(int16_t)target) <= 5 && (millis()/(stby?1000:500))%2));
-	
+
 	if (sendNext <= millis()) {
 		sendNext += 100;
 #ifndef TEST_ADC
