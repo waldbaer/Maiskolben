@@ -742,12 +742,14 @@ void display(void) {
 			tft.setTextColor(temp_specific_textcolor, BLACK);
 			if (temperature < TEMP_COLD) {
 				tft.print(F("COLD "));
-
 			} else {
+				if(cur_t_old < TEMP_COLD) {
+					tft.fillRect(36,50,72,21,BLACK); // Clear degree symbol
+				}
 				printTemp(temperature);
-				tft.write(' ');
-				tft.drawCircle(100, 55, 4, temp_specific_textcolor); // degree symbol
-				tft.drawCircle(100, 55, 3, temp_specific_textcolor); // degree symbol
+				tft.drawCircle(100, 54, 4, temp_specific_textcolor); // degree symbol
+				tft.drawCircle(100, 54, 3, temp_specific_textcolor); // degree symbol
+				tft.setCursor(108, 50);
 				tft.write(fahrenheit?'F':'C');
 			}
 		}
