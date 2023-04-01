@@ -624,11 +624,9 @@ void display(void) {
 	if (force_redraw) tft.fillScreen(BLACK);
 	int16_t temperature = cur_t; //buffer volatile value
 	boolean yell = stby || (stby_layoff && blink);
-	// on / off sign
-	tft.drawCircle(17,61,10, off?RED:yell?YELLOW:GREEN);
-	tft.drawCircle(17,61,11, off?RED:yell?YELLOW:GREEN);
-	tft.drawFastVLine(17,47,14, off?RED:yell?YELLOW:GREEN);
-	tft.drawFastVLine(18,47,14, off?RED:yell?YELLOW:GREEN);
+
+	// on / off power symbol
+	tft.drawBitmap(4, 47, power, 25, 26, off?RED:yell?YELLOW:GREEN);
 
 	if (error != NO_ERROR) {
 		if (error != error_old || force_redraw) {
@@ -699,8 +697,8 @@ void display(void) {
 				tft.write(fahrenheit?'F':'C');
 
 				// Set-Temperature up/down arrows
-				tft.fillTriangle(149, 50, 159, 50, 154, 36, (set_t < TEMP_MAX) ? WHITE : DARKGRAY);
-				tft.fillTriangle(149, 70, 159, 70, 154, 82, (set_t > TEMP_MIN) ? WHITE : DARKGRAY);
+				tft.drawBitmap(148, 35, arrow_up, 11, 12, (set_t < TEMP_MAX) ? WHITE : DARKGRAY);
+				tft.drawBitmap(148, 72, arrow_down, 11, 12, (set_t > TEMP_MIN) ? WHITE : DARKGRAY);
 			}
 		}
 		if (!off) {
