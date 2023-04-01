@@ -312,13 +312,19 @@ void setDisplayMode(boolean bgr) {
 void optionMenu(void) {
 	tft.fillScreen(BLACK);
 	digitalWrite(HEAT_LED, LOW);
+
+	// Options Title with underline
 	tft.setTextSize(2);
 	tft.setCursor(0,0);
 	tft.setTextColor(WHITE);
 	tft.println("Options\n");
+	tft.drawFastHLine(0, 18, 83, WHITE);
+
+	// Bottom buttons description
 	tft.setTextColor(WHITE);
-	tft.setCursor(10,112);
-	tft.print("ON  OFF EXIT");
+	tft.setCursor(20,113);
+	tft.print("ON OFF EXIT");
+
 	uint8_t options = 3;
 	uint8_t opt = 0;
 	boolean redraw = true;
@@ -339,14 +345,14 @@ void optionMenu(void) {
 			tft.println(" Heat on boot");
 			tft.setTextColor(fahrenheit?GREEN:RED);
 			tft.println(" Fahrenheit");
-			
-			tft.setCursor(0, (opt+2)*18);
+
+			tft.setCursor(0, 20 + (opt+1)*16);
 			tft.setTextColor(WHITE);
 			tft.print(">");
 			redraw = false;
 		}
 		if (!digitalRead(SW_UP)) {
-			tft.setCursor(0, (opt+2)*18);
+			tft.setCursor(0, 20 + (opt+1)*16);
 			tft.setTextColor(BLACK);
 			tft.print(">");
 			opt = (opt+options-1)%options;
@@ -354,7 +360,7 @@ void optionMenu(void) {
 			redraw = true;
 		}
 		if (!digitalRead(SW_DOWN)) {
-			tft.setCursor(0, (opt+2)*18);
+			tft.setCursor(0, 20 + (opt+1)*16);
 			tft.setTextColor(BLACK);
 			tft.print(">");
 			opt = (opt+1)%options;
